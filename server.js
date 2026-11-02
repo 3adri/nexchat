@@ -4,7 +4,7 @@ const path = require("path");
 const WebSocket = require("ws");
 
 const PORT = Number(process.env.PORT || 3000);
-const HOST = process.env.HOST || "127.0.0.1";
+const HOST = process.env.HOST || "0.0.0.0";
 const rooms = new Map();
 const server = http.createServer((req,res)=>{
   const file = req.url === "/" ? "index.html" : path.basename(req.url.split("?")[0]);
