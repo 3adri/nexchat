@@ -1,0 +1,4 @@
+# Sustituye el dominio por uno tuyo y configura su DNS hacia este servidor.
+chat.tudominio.com {
+    reverse_proxy 127.0.0.1:3000
+}

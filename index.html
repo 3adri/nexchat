@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0a0e17"><title>NEXCHAT — Chat privado</title>
+<style>
+:root{color-scheme:dark;--bg:#0a0e17;--side:#101725;--panel:#141e2e;--panel2:#0e1725;--line:#25344b;--text:#edf3ff;--muted:#93a3bd;--accent:#7c9cff;--cyan:#66e5dc;--green:#61d69b;--red:#ff7888}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:14px/1.45 Inter,system-ui,Segoe UI,sans-serif;height:100vh;overflow:hidden}
+button,input{font:inherit}button{cursor:pointer;border:0;border-radius:10px;padding:10px 13px;background:var(--accent);color:#08101f;font-weight:750}button:disabled{opacity:.45;cursor:not-allowed}.ghost{background:#202d42;color:var(--text);border:1px solid var(--line)}.danger{background:#512733;color:#ffdce1;border:1px solid #793d4a}
+.app{height:100vh;display:grid;grid-template-columns:245px minmax(0,1fr) 260px}.sidebar{background:var(--side);border-right:1px solid var(--line);padding:18px 14px;display:flex;flex-direction:column;gap:18px}.brand{display:flex;align-items:center;gap:10px;font-weight:900;letter-spacing:.12em;font-size:16px;padding:5px}.logo{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;background:linear-gradient(140deg,#7c9cff,#66e5dc);color:#08101c;font-size:19px}.small-label{color:#7586a2;font-size:10px;letter-spacing:.15em;font-weight:800;margin:5px 8px}.room-card{background:#19263a;border:1px solid #2b3b55;border-radius:12px;padding:12px}.room-card strong{display:block;margin-bottom:4px}.room-card span{font-size:12px;color:var(--muted)}.field{width:100%;border:1px solid var(--line);background:#0b1320;color:var(--text);border-radius:10px;padding:11px;outline:none}.field:focus{border-color:var(--accent)}.sidebar .grow{flex:1}.profile{border-top:1px solid var(--line);padding-top:14px;display:flex;align-items:center;gap:9px}.avatar{width:32px;height:32px;border-radius:50%;background:#344b70;display:grid;place-items:center;font-weight:800}.profile small{display:block;color:var(--muted);font-size:11px}
+.main{min-width:0;display:flex;flex-direction:column;background:radial-gradient(ellipse at 55% -20%,#1d2d4c 0,transparent 45%),var(--bg)}.topbar{height:70px;flex:none;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 22px;gap:12px}.topbar h1{font-size:16px;margin:0}.status{color:var(--muted);font-size:12px;display:flex;align-items:center;gap:7px}.dot{width:8px;height:8px;border-radius:50%;background:#64748b}.dot.on{background:var(--green);box-shadow:0 0 12px #61d69b88}.content{flex:1;min-height:0;display:flex;flex-direction:column;max-width:1000px;width:100%;margin:0 auto;padding:20px 22px}.welcome{padding:14px 16px;background:#132137;border:1px solid #2a405e;border-radius:13px;margin-bottom:15px;color:#c9d8ef;font-size:12px}.welcome b{color:var(--cyan)}.messages{flex:1;min-height:0;overflow:auto;display:flex;flex-direction:column;gap:12px;padding:4px 2px 18px}.msg{display:flex;gap:10px;max-width:85%}.msg.mine{align-self:flex-end;flex-direction:row-reverse}.msg .bubble{background:#17243a;border:1px solid #293b56;padding:10px 13px;border-radius:4px 14px 14px 14px;overflow-wrap:anywhere}.msg.mine .bubble{background:#23345a;border-color:#3c5385;border-radius:14px 4px 14px 14px}.meta{font-size:11px;color:#9db0cc;margin-bottom:4px}.body{white-space:pre-wrap}.composer{display:flex;gap:9px;padding-top:12px;border-top:1px solid var(--line)}.composer input{flex:1;min-width:0}.right{background:var(--side);border-left:1px solid var(--line);padding:19px 15px;display:flex;flex-direction:column;gap:15px}.right h2{font-size:12px;letter-spacing:.13em;color:#91a2be;margin:4px 5px}.member{display:flex;align-items:center;gap:9px;padding:8px;border-radius:10px;background:#141f30}.member small{display:block;color:var(--muted);font-size:11px}.callbox{margin-top:auto;border:1px solid var(--line);background:#131f31;border-radius:14px;padding:13px}.callbox p{color:var(--muted);font-size:12px;margin:6px 0 12px}.call-actions{display:flex;gap:8px;flex-wrap:wrap}.call-actions button{flex:1}.notice{font-size:11px;color:#8798b2;margin-top:9px}.hidden{display:none!important}
+@media(max-width:850px){.app{grid-template-columns:190px minmax(0,1fr)}.right{display:none}.content{padding:14px}.topbar{padding:0 14px}}
+@media(max-width:560px){.app{grid-template-columns:1fr}.sidebar{display:none}.topbar{height:60px}.content{padding:12px}.msg{max-width:96%}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+ <div class="brand"><div class="logo">N</div>NEXCHAT</div>
+ <div><div class="small-label">TU ESPACIO</div><div class="room-card"><strong>◈ Sala privada</strong><span>Chat y voz cifrados</span></div></div>
+ <div><div class="small-label">IDENTIDAD</div><input id="name" class="field" maxlength="24" placeholder="Tu nombre" value="Invitado"></div>
+ <div><div class="small-label">SALA</div><input id="room" class="field" maxlength="40" placeholder="nombre-sala" value="general"><p style="font-size:11px;color:#8292ac;margin:7px 4px">Todos deben usar el mismo nombre de sala y contraseña.</p></div>
+ <div><div class="small-label">CONTRASEÑA DE SALA</div><input id="secret" class="field" type="password" autocomplete="new-password" placeholder="Clave compartida"></div>
+ <button id="connect">Conectar a la sala</button>
+ <div class="grow"></div>
+ <div class="profile"><div class="avatar" id="avatar">I</div><div><b id="profileName">Invitado</b><small id="profileState">Sin conectar</small></div></div>
+</aside>
+<main class="main">
+ <header class="topbar"><h1 id="roomTitle"># general</h1><div class="status"><span class="dot" id="connectionDot"></span><span id="connectionText">Desconectado</span></div></header>
+ <section class="content">
+  <div class="welcome"><b>Privacidad activa:</b> mensajes cifrados en el navegador con AES-GCM. La contraseña de sala no se envía al servidor. Usa una contraseña larga y única. <span id="cryptoState">Aún sin conectar.</span></div>
+  <div class="messages" id="messages"><div style="margin:auto;text-align:center;color:#7f91ad"><div style="font-size:36px;margin-bottom:8px">✧</div><b>Tu sala empieza aquí</b><p>Conecta para enviar mensajes y realizar llamadas.</p></div></div>
+  <form class="composer" id="chatForm"><input id="message" class="field" maxlength="2000" placeholder="Escribe un mensaje…" autocomplete="off" disabled><button id="send" disabled>Enviar ↗</button></form>
+ </section>
+</main>
+<aside class="right">
+ <h2>MIEMBROS EN LA SALA <span id="memberCount">0</span></h2>
+ <div id="members"><div class="empty" style="color:#8192ac;padding:8px">Aún no hay miembros.</div></div>
+ <div class="callbox"><b>◉ Llamada de voz</b><p>Conecta el micrófono y llama a los miembros de esta sala. El navegador pedirá permiso.</p><div class="call-actions"><button id="callBtn" disabled>Unirse</button><button id="muteBtn" class="ghost" disabled>Silenciar</button></div><div class="notice" id="callState">Sin llamada activa.</div></div>
+</aside>
+</div>
+<script>
+"use strict";
+const $=id=>document.getElementById(id);
+let ws=null, aesKey=null, clientId=null, localStream=null, peers=new Map(), joined=false, muted=false;
+const pcsConfig={iceServers:[{urls:"stun:stun.l.google.com:19302"}]};
+function setStatus(on,text){$("connectionDot").classList.toggle("on",on);$("connectionText").textContent=text;$("profileState").textContent=on?"Conectado":"Sin conectar";}
+function cleanName(s){return (s||"Invitado").trim().replace(/[<>]/g,"").slice(0,24)||"Invitado";}
+function safeRoom(s){return (s||"general").trim().toLowerCase().replace(/[^a-z0-9_-]/g,"").slice(0,40)||"general";}
+async function deriveKey(pass,room){
+ if(pass.length<10) throw new Error("Usa una contraseña de sala de al menos 10 caracteres.");
+ const enc=new TextEncoder(), material=await crypto.subtle.importKey("raw",enc.encode(pass),"PBKDF2",false,["deriveKey"]);
+ return crypto.subtle.deriveKey({name:"PBKDF2",salt:enc.encode("NEXCHAT|"+room),iterations:250000,hash:"SHA-256"},material,{name:"AES-GCM",length:256},false,["encrypt","decrypt"]);
+}
+async function encryptMessage(text){
+ const iv=crypto.getRandomValues(new Uint8Array(12)), data=new TextEncoder().encode(text);
+ const cipher=await crypto.subtle.encrypt({name:"AES-GCM",iv},aesKey,data);
+ return {iv:btoa(String.fromCharCode(...iv)),data:btoa(String.fromCharCode(...new Uint8Array(cipher)))};
+}
+async function decryptMessage(payload){
+ const iv=Uint8Array.from(atob(payload.iv),c=>c.charCodeAt(0)), data=Uint8Array.from(atob(payload.data),c=>c.charCodeAt(0));
+ const plain=await crypto.subtle.decrypt({name:"AES-GCM",iv},aesKey,data);
+ return new TextDecoder().decode(plain);
+}
+function send(obj){if(ws&&ws.readyState===WebSocket.OPEN)ws.send(JSON.stringify(obj));}
+function addMessage(name,text,mine=false){
+ const wrap=document.createElement("div");wrap.className="msg"+(mine?" mine":"");
+ const av=document.createElement("div");av.className="avatar";av.textContent=(name[0]||"?").toUpperCase();
+ const bubble=document.createElement("div");bubble.className="bubble";
+ const meta=document.createElement("div");meta.className="meta";meta.textContent=name+" · "+new Date().toLocaleTimeString("es-ES",{hour:"2-digit",minute:"2-digit"});
+ const body=document.createElement("div");body.className="body";body.textContent=text;
+ bubble.append(meta,body);wrap.append(av,bubble);$("messages").append(wrap);$("messages").scrollTop=$("messages").scrollHeight;
+}
+function renderMembers(list){
+ $("memberCount").textContent=list.length;$("members").replaceChildren();
+ list.forEach(m=>{const el=document.createElement("div");el.className="member";const av=document.createElement("div");av.className="avatar";av.textContent=(m.name[0]||"?").toUpperCase();const info=document.createElement("div");const b=document.createElement("b");b.textContent=m.name;const sm=document.createElement("small");sm.textContent=m.id===clientId?"Tú":"En la sala";info.append(b,sm);el.append(av,info);$("members").append(el);});
+}
+async function connect(){
+ if(joined)return;
+ const name=cleanName($("name").value),room=safeRoom($("room").value),secret=$("secret").value;
+ if(!secret){alert("Escribe una contraseña de sala compartida.");return;}
+ $("connect").disabled=true;$("connect").textContent="Conectando…";
+ try{
+  aesKey=await deriveKey(secret,room);
+  const scheme=location.protocol==="https:"?"wss:":"ws:";
+  const wsUrl=scheme+"//"+location.host;
+  ws=new WebSocket(wsUrl);
+  ws.onopen=()=>send({type:"join",room,name});
+  ws.onmessage=async ev=>{
+   let m;try{m=JSON.parse(ev.data)}catch{return;}
+   if(m.type==="welcome"){clientId=m.id;joined=true;setStatus(true,"Conectado · WSS");$("profileName").textContent=name;$("avatar").textContent=name[0].toUpperCase();$("roomTitle").textContent="# "+room;$("cryptoState").textContent="Clave AES-GCM derivada localmente.";$("message").disabled=false;$("send").disabled=false;$("callBtn").disabled=false;$("connect").textContent="Conectado";addMessage("NEXCHAT","Conexión segura establecida. Comparte la contraseña de sala por un canal distinto.");}
+   if(m.type==="members")renderMembers(m.members);
+   if(m.type==="peer-joined"){if(m.id!==clientId)makeOffer(m.id);}
+   if(m.type==="peer-left"){closePeer(m.id);addMessage("NEXCHAT",m.name+" ha salido de la sala.");}
+   if(m.type==="chat"){try{const plain=await decryptMessage(m.payload);addMessage(m.name,plain,false);}catch{addMessage("NEXCHAT","Mensaje recibido, pero no se pudo descifrar. Comprueba que todos usan la misma contraseña.");}}
+   if(m.type==="signal")handleSignal(m.from,m.data);
+   if(m.type==="error"){alert(m.message);$("connect").disabled=false;$("connect").textContent="Conectar a la sala";}
+  };
+  ws.onerror=()=>{setStatus(false,"Error de conexión");};
+  ws.onclose=()=>{joined=false;setStatus(false,"Desconectado");$("message").disabled=true;$("send").disabled=true;$("callBtn").disabled=true;$("muteBtn").disabled=true;$("connect").disabled=false;$("connect").textContent="Conectar a la sala";closeAllPeers();};
+ }catch(e){alert(e.message);$("connect").disabled=false;$("connect").textContent="Conectar a la sala";}
+}
+async function sendChat(text){
+ if(!joined||!text.trim())return;
+ try{const payload=await encryptMessage(text.trim());send({type:"chat",payload});addMessage(cleanName($("name").value),text.trim(),true);}
+ catch(e){addMessage("NEXCHAT","No se pudo cifrar el mensaje.");}
+}
+$("connect").addEventListener("click",connect);
+$("name").addEventListener("input",()=>{$("profileName").textContent=cleanName($("name").value);$("avatar").textContent=cleanName($("name").value)[0].toUpperCase();});
+$("room").addEventListener("input",()=>{$("roomTitle").textContent="# "+safeRoom($("room").value);});
+$("chatForm").addEventListener("submit",e=>{e.preventDefault();const v=$("message").value;$("message").value="";sendChat(v);});
+function getPeer(id){
+ let pc=peers.get(id);if(pc)return pc;
+ pc=new RTCPeerConnection(pcsConfig);peers.set(id,pc);
+ if(localStream)localStream.getTracks().forEach(t=>pc.addTrack(t,localStream));
+ pc.onicecandidate=e=>{if(e.candidate)send({type:"signal",to:id,data:{candidate:e.candidate}});};
+ pc.ontrack=e=>{let audio=document.getElementById("audio-"+id);if(!audio){audio=document.createElement("audio");audio.id="audio-"+id;audio.autoplay=true;document.body.append(audio);}audio.srcObject=e.streams[0];};
+ pc.onconnectionstatechange=()=>{if(["failed","closed","disconnected"].includes(pc.connectionState)){closePeer(id);}};
+ pc.onicecandidateerror=()=>{$("callState").textContent="Problema ICE: puede que la red necesite un servidor TURN.";};
+ return pc;
+}
+async function makeOffer(id){
+ if(!localStream)return;
+ const pc=getPeer(id);const offer=await pc.createOffer();await pc.setLocalDescription(offer);send({type:"signal",to:id,data:{description:pc.localDescription}});
+}
+async function handleSignal(from,data){
+ try{
+  const pc=getPeer(from);
+  if(data.description){
+   await pc.setRemoteDescription(data.description);
+   if(data.description.type==="offer"){const answer=await pc.createAnswer();await pc.setLocalDescription(answer);send({type:"signal",to:from,data:{description:pc.localDescription}});}
+  }else if(data.candidate){await pc.addIceCandidate(data.candidate);}
+ }catch(e){console.warn("Señal WebRTC:",e);}
+}
+function closePeer(id){const pc=peers.get(id);if(pc){pc.close();peers.delete(id);}const a=document.getElementById("audio-"+id);if(a)a.remove();}
+function closeAllPeers(){[...peers.keys()].forEach(closePeer);}
+$("callBtn").addEventListener("click",async()=>{
+ try{
+  if(!localStream){localStream=await navigator.mediaDevices.getUserMedia({audio:true,video:false});$("callBtn").textContent="Salir";$("muteBtn").disabled=false;$("callState").textContent="Micrófono activo · esperando participantes";for(const id of peers.keys()){const pc=peers.get(id);localStream.getTracks().forEach(t=>pc.addTrack(t,localStream));makeOffer(id);} }
+  else{localStream.getTracks().forEach(t=>t.stop());localStream=null;closeAllPeers();$("callBtn").textContent="Unirse";$("muteBtn").disabled=true;$("callState").textContent="Has salido de la llamada.";}
+ }catch(e){alert("No se pudo acceder al micrófono: "+e.message);}
+});
+$("muteBtn").addEventListener("click",()=>{if(!localStream)return;muted=!muted;localStream.getAudioTracks().forEach(t=>t.enabled=!muted);$("muteBtn").textContent=muted?"Activar micro":"Silenciar";});
+window.addEventListener("beforeunload",()=>{if(ws)ws.close();if(localStream)localStream.getTracks().forEach(t=>t.stop());});
+</script>
+</body></html>
